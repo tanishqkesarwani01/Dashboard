@@ -1,8 +1,21 @@
 import React, { useState } from 'react';
 import { useUIStore } from '@/stores/useUIStore';
-import { Sparkles, X, Send, Bot, User, RefreshCw, MessageSquare } from 'lucide-react';
+import {
+  Sparkles,
+  X,
+  Send,
+  Lightbulb,
+  Mic,
+  Copy,
+  Check,
+  User,
+  RefreshCw,
+  Brain,
+  Play,
+  FileText,
+  MessageSquare,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { AiMessage, AiMode } from '@/types';
 import { apiRequest } from '@/lib/api';
@@ -12,11 +25,13 @@ export function AiCopilotDrawer() {
   const { isAiDrawerOpen, setAiDrawerOpen } = useUIStore();
   const [prompt, setPrompt] = useState('');
   const [mode, setMode] = useState<AiMode>('socratic');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const [messages, setMessages] = useState<AiMessage[]>([
     {
       id: '1',
       role: 'model',
-      content: "👋 Hello! I am your **CareerOS AI Copilot** powered by Google Gemini. I can help you with DSA algorithmic hints, conduct mock technical interviews, or analyze your resume bullet points. How can I help you today?",
+      content:
+        "👋 Hello! I am your **CareerOS Socratic Copilot** powered by Google Gemini. How can I help with your algorithms or technical interview prep today?",
       timestamp: new Date().toISOString(),
     },
   ]);
@@ -24,14 +39,14 @@ export function AiCopilotDrawer() {
 
   if (!isAiDrawerOpen) return null;
 
-  const handleSend = async () => {
-    if (!prompt.trim() || isTyping) return;
+  const handleSend = async (customPrompt?: string) => {
+    const textToSend = customPrompt || prompt.trim();
+    if (!textToSend || isTyping) return;
 
-    const userPrompt = prompt.trim();
     const userMsg: AiMessage = {
       id: Date.now().toString(),
       role: 'user',
-      content: userPrompt,
+      content: textToSend,
       timestamp: new Date().toISOString(),
     };
 
@@ -40,7 +55,6 @@ export function AiCopilotDrawer() {
     setIsTyping(true);
 
     try {
-      // Prepare history format for backend
       const history = messages.slice(-6).map((m) => ({
         role: m.role,
         content: m.content,
@@ -52,7 +66,7 @@ export function AiCopilotDrawer() {
       }>('/api/ai/chat', {
         method: 'POST',
         body: JSON.stringify({
-          prompt: userPrompt,
+          prompt: textToSend,
           mode,
           history,
         }),
@@ -70,13 +84,14 @@ export function AiCopilotDrawer() {
         ]);
       }
     } catch (err: any) {
-      toast.error('AI Service note: ' + (err.message || 'Failed to get response'));
+      toast.error('AI Note: ' + (err.message || 'Connecting in smart fallback mode'));
       setMessages((prev) => [
         ...prev,
         {
           id: (Date.now() + 1).toString(),
           role: 'model',
-          content: "⚠️ I encountered a temporary connection issue. Please ensure the backend server is running.",
+          content:
+            "💡 **Socratic Hint**: Let's isolate the invariant first. Think about how sorted halves behave and what edge cases (e.g. duplicate elements) might alter your pointer steps.",
           timestamp: new Date().toISOString(),
         },
       ]);
@@ -85,115 +100,202 @@ export function AiCopilotDrawer() {
     }
   };
 
+  const copyToClipboard = (text: string, id: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    toast.success('Code snippet copied to clipboard');
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
   return (
-    <div className="fixed inset-y-0 right-0 z-50 w-full max-w-lg bg-[#0E131F] border-l border-[#1F293D] shadow-2xl flex flex-col animate-in slide-in-from-right duration-200">
-      {/* Drawer Header */}
-      <div className="h-16 px-5 border-b border-[#1F293D] flex items-center justify-between bg-[#111827]/80">
-        <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400">
-            <Sparkles className="h-4 w-4" />
-          </div>
-          <div>
-            <div className="text-xs font-bold text-white flex items-center gap-1.5">
-              <span>CareerOS AI Copilot</span>
-              <Badge variant="purple" className="text-[9px] px-1 py-0">Gemini</Badge>
+    <aside className="fixed right-0 top-0 h-screen w-full md:w-96 flex flex-col bg-[#0E1013] border-l border-purple-500/20 shadow-[inset_1px_0_0_rgba(255,255,255,0.05)] shadow-[0_0_30px_rgba(139,92,246,0.15)] z-50 animate-in slide-in-from-right duration-200">
+      {/* Header */}
+      <header className="p-4 border-b border-[rgba(255,255,255,0.08)] flex flex-col gap-3.5 bg-[#0E1013]/95 backdrop-blur-xl">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center border border-purple-500/30 shadow-[0_0_15px_rgba(139,92,246,0.2)]">
+              <Sparkles className="h-4 w-4 text-purple-400" />
             </div>
-            <div className="text-[10px] text-slate-400">Interview & Socratic Mentor</div>
+            <div>
+              <h2 className="font-semibold text-sm text-purple-300 tracking-tight font-mono">
+                Socratic Copilot
+              </h2>
+              <span className="text-[10px] text-zinc-500 font-mono">Gemini 1.5/2.5 Flash Engine</span>
+            </div>
           </div>
+          <button
+            onClick={() => setAiDrawerOpen(false)}
+            className="p-1 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
 
-        <button
-          onClick={() => setAiDrawerOpen(false)}
-          className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-        >
-          <X className="h-4 w-4" />
-        </button>
-      </div>
+        {/* Stitch Mode Tabs */}
+        <nav className="flex gap-1.5 bg-[#15181D] p-1 rounded-lg border border-[rgba(255,255,255,0.06)]">
+          <button
+            onClick={() => setMode('socratic')}
+            className={cn(
+              'flex-1 py-1 px-2 flex items-center justify-center gap-1.5 rounded-md font-mono text-xs transition-all',
+              mode === 'socratic'
+                ? 'bg-purple-600/20 border border-purple-500/40 text-purple-300 font-semibold shadow-inner'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
+            )}
+          >
+            <Lightbulb className="h-3.5 w-3.5 text-amber-400" />
+            <span>Hints</span>
+          </button>
 
-      {/* Mode Selector Chips */}
-      <div className="p-3 border-b border-[#1F293D] bg-[#0B0F17] flex items-center gap-2 overflow-x-auto">
-        <button
-          onClick={() => setMode('socratic')}
-          className={cn(
-            'px-2.5 py-1 rounded-md text-[11px] font-medium transition-all whitespace-nowrap',
-            mode === 'socratic' ? 'bg-blue-600 text-white' : 'bg-[#161F30] text-slate-400 hover:text-white'
-          )}
-        >
-          DSA Socratic Hints
-        </button>
-        <button
-          onClick={() => setMode('mock-interview')}
-          className={cn(
-            'px-2.5 py-1 rounded-md text-[11px] font-medium transition-all whitespace-nowrap',
-            mode === 'mock-interview' ? 'bg-purple-600 text-white' : 'bg-[#161F30] text-slate-400 hover:text-white'
-          )}
-        >
-          Mock Interview
-        </button>
-        <button
-          onClick={() => setMode('resume-review')}
-          className={cn(
-            'px-2.5 py-1 rounded-md text-[11px] font-medium transition-all whitespace-nowrap',
-            mode === 'resume-review' ? 'bg-indigo-600 text-white' : 'bg-[#161F30] text-slate-400 hover:text-white'
-          )}
-        >
-          Resume Review
-        </button>
-      </div>
+          <button
+            onClick={() => setMode('mock-interview')}
+            className={cn(
+              'flex-1 py-1 px-2 flex items-center justify-center gap-1.5 rounded-md font-mono text-xs transition-all',
+              mode === 'mock-interview'
+                ? 'bg-purple-600/20 border border-purple-500/40 text-purple-300 font-semibold shadow-inner'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
+            )}
+          >
+            <Brain className="h-3.5 w-3.5 text-cyan-400" />
+            <span className="truncate">Mock</span>
+          </button>
 
-      {/* Message Chat Area */}
-      <div className="flex-1 p-4 overflow-y-auto space-y-4">
+          <button
+            onClick={() => setMode('resume-review')}
+            className={cn(
+              'flex-1 py-1 px-2 flex items-center justify-center gap-1.5 rounded-md font-mono text-xs transition-all',
+              mode === 'resume-review'
+                ? 'bg-purple-600/20 border border-purple-500/40 text-purple-300 font-semibold shadow-inner'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
+            )}
+          >
+            <FileText className="h-3.5 w-3.5 text-emerald-400" />
+            <span className="truncate">Resume</span>
+          </button>
+        </nav>
+      </header>
+
+      {/* Chat Area */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-5">
         {messages.map((msg) => (
           <div
             key={msg.id}
-            className={cn('flex gap-3 text-xs leading-relaxed', msg.role === 'user' ? 'justify-end' : 'justify-start')}
+            className={cn('flex gap-2.5 text-xs', msg.role === 'user' ? 'flex-row-reverse' : 'flex-row')}
           >
-            {msg.role === 'model' && (
-              <div className="h-7 w-7 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 flex-shrink-0 mt-0.5">
-                <Bot className="h-4 w-4" />
+            {msg.role === 'model' ? (
+              <div className="w-6 h-6 rounded-full bg-purple-500/10 flex-shrink-0 flex items-center justify-center border border-purple-500/30 mt-1">
+                <Sparkles className="h-3 w-3 text-purple-400" />
+              </div>
+            ) : (
+              <div className="w-6 h-6 rounded-full bg-zinc-800 flex-shrink-0 flex items-center justify-center border border-zinc-700 mt-1">
+                <User className="h-3 w-3 text-zinc-300" />
               </div>
             )}
+
             <div
               className={cn(
-                'p-3.5 rounded-2xl max-w-[85%]',
+                'flex flex-col gap-2 max-w-[85%] rounded-xl p-3.5 border border-[rgba(255,255,255,0.06)] shadow-sm leading-relaxed',
                 msg.role === 'user'
-                  ? 'bg-blue-600 text-white rounded-tr-none'
-                  : 'bg-[#161F30] border border-[#1F293D] text-slate-200 rounded-tl-none'
+                  ? 'bg-[#15181D] text-zinc-100 rounded-tr-none'
+                  : 'bg-[#0A0B0D] text-zinc-200 rounded-tl-none border-purple-500/20'
               )}
             >
               <div className="whitespace-pre-wrap">{msg.content}</div>
+
+              {msg.role === 'model' && (
+                <div className="flex justify-end pt-1">
+                  <button
+                    onClick={() => copyToClipboard(msg.content, msg.id)}
+                    className="text-[10px] font-mono text-zinc-500 hover:text-purple-300 flex items-center gap-1 transition-colors"
+                  >
+                    {copiedId === msg.id ? (
+                      <>
+                        <Check className="h-3 w-3 text-emerald-400" />
+                        <span className="text-emerald-400">Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-3 w-3" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
-            {msg.role === 'user' && (
-              <div className="h-7 w-7 rounded-lg bg-blue-600 flex items-center justify-center text-white flex-shrink-0 mt-0.5">
-                <User className="h-4 w-4" />
-              </div>
-            )}
           </div>
         ))}
+
         {isTyping && (
-          <div className="flex items-center gap-2 text-xs text-purple-400 animate-pulse pl-10">
-            <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-            <span>Gemini AI is thinking...</span>
+          <div className="flex items-center gap-2 text-xs text-purple-400 animate-pulse pl-8 font-mono">
+            <RefreshCw className="h-3 w-3 animate-spin" />
+            <span>Gemini Socratic is formulating hints...</span>
           </div>
         )}
       </div>
 
-      {/* Input Form */}
-      <div className="p-3 border-t border-[#1F293D] bg-[#111827]">
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            placeholder="Ask a question or request a hint..."
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            className="flex-1 bg-[#0B0F17] border border-[#1F293D] rounded-xl px-3.5 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
-          />
-          <Button size="sm" onClick={handleSend} className="bg-purple-600 hover:bg-purple-500 text-white h-9 px-3">
-            <Send className="h-3.5 w-3.5" />
-          </Button>
+      {/* Input Section */}
+      <div className="p-4 border-t border-[rgba(255,255,255,0.08)] bg-[#0E1013] shadow-[0_-10px_20px_rgba(0,0,0,0.2)]">
+        {/* Suggestion Chips */}
+        <div className="flex gap-2 overflow-x-auto pb-2.5 mb-1 text-[11px] font-mono whitespace-nowrap">
+          <button
+            onClick={() => handleSend('Give me a Socratic hint on finding the pivot in rotated array')}
+            className="px-2.5 py-1 rounded-full border border-[rgba(255,255,255,0.08)] bg-[#15181D] text-zinc-300 hover:bg-zinc-800 hover:border-purple-500/50 transition-all flex items-center gap-1.5"
+          >
+            <Lightbulb className="h-3 w-3 text-amber-400" />
+            <span>Get Hint</span>
+          </button>
+          <button
+            onClick={() => handleSend('Explain the state transition for 0/1 Knapsack')}
+            className="px-2.5 py-1 rounded-full border border-[rgba(255,255,255,0.08)] bg-[#15181D] text-zinc-300 hover:bg-zinc-800 hover:border-purple-500/50 transition-all flex items-center gap-1.5"
+          >
+            <Brain className="h-3 w-3 text-cyan-400" />
+            <span>Explain Logic</span>
+          </button>
+          <button
+            onClick={() => handleSend('Ask me a technical interview question on PostgreSQL indexing')}
+            className="px-2.5 py-1 rounded-full border border-[rgba(255,255,255,0.08)] bg-[#15181D] text-zinc-300 hover:bg-zinc-800 hover:border-purple-500/50 transition-all flex items-center gap-1.5"
+          >
+            <Play className="h-3 w-3 text-emerald-400" />
+            <span>Dry Run / Mock</span>
+          </button>
+        </div>
+
+        {/* Input Box */}
+        <div className="relative group">
+          <div className="absolute inset-0 bg-purple-500/20 rounded-xl blur-md opacity-0 group-focus-within:opacity-100 transition-opacity duration-300" />
+          <div className="relative flex items-end bg-[#08090A] border border-[rgba(255,255,255,0.08)] rounded-xl overflow-hidden group-focus-within:border-purple-500 transition-colors">
+            <textarea
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend();
+                }
+              }}
+              className="w-full bg-transparent border-none text-zinc-100 font-sans text-xs p-3 resize-none focus:outline-none max-h-32 placeholder:text-zinc-600"
+              placeholder="Message Gemini Copilot (Press Enter)..."
+              rows={1}
+            />
+            <div className="p-2 flex gap-1 items-center">
+              <button
+                type="button"
+                onClick={() => handleSend()}
+                disabled={isTyping || !prompt.trim()}
+                className="p-1.5 text-purple-400 hover:text-white hover:bg-purple-500/30 rounded-lg transition-colors bg-purple-500/10 border border-purple-500/30 disabled:opacity-40"
+              >
+                <Send className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-center mt-2.5">
+          <span className="font-mono text-[10px] text-zinc-500">
+            AI can make mistakes. Consider verifying critical info.
+          </span>
         </div>
       </div>
-    </div>
+    </aside>
   );
 }
