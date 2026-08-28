@@ -15,42 +15,49 @@ import {
   ChevronRight,
   LogOut,
   User,
-  Zap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+interface NavItem {
+  label: string;
+  path: string;
+  icon: any;
+  kbd?: string;
+  badge?: string;
+}
+
+interface NavGroup {
+  title: string;
+  items: NavItem[];
+}
 
 export function Sidebar() {
   const [location] = useLocation();
   const { isSidebarCollapsed, toggleSidebar, setAiDrawerOpen } = useUIStore();
   const { profile, signOut } = useAuthStore();
 
-  const navGroups = [
+  const navGroups: NavGroup[] = [
     {
-      title: 'Navigate',
+      title: 'Workspace',
       items: [
-        { label: 'Dashboard', path: '/', icon: LayoutDashboard },
-        { label: 'Analytics', path: '/analytics', icon: BarChart3 },
+        { label: 'Command Center', path: '/', icon: LayoutDashboard, kbd: '⌘1' },
+        { label: 'Velocity & Analytics', path: '/analytics', icon: BarChart3, kbd: '⌘2' },
       ],
     },
     {
-      title: 'Learn & Master',
+      title: 'Mastery Engines',
       items: [
-        { label: 'DSA Spaced Repetition', path: '/dsa', icon: Code2, badge: 'Revision' },
-        { label: 'Web Development', path: '/curriculum/webdev', icon: BookOpen },
-        { label: 'Core CS (OS & DBMS)', path: '/curriculum/corecs', icon: Database },
+        { label: 'DSA Spaced Repetition', path: '/dsa', icon: Code2, badge: '4 due' },
+        { label: 'Full-Stack Roadmap', path: '/curriculum/webdev', icon: BookOpen },
+        { label: 'Core CS Systems', path: '/curriculum/corecs', icon: Database },
       ],
     },
     {
-      title: 'Consistency & Habits',
+      title: 'Consistency',
       items: [
-        { label: 'Daily Logs & Heatmap', path: '/habits', icon: CalendarCheck },
-      ],
-    },
-    {
-      title: 'Career & Portfolio',
-      items: [
-        { label: 'Projects & Hub', path: '/projects', icon: FolderGit2 },
-        { label: 'Custom Modules', path: '/custom-modules', icon: Database, badge: 'Dynamic' },
+        { label: 'Daily Study Matrix', path: '/habits', icon: CalendarCheck },
+        { label: 'Project Artifacts', path: '/projects', icon: FolderGit2 },
+        { label: 'Custom Schemas', path: '/custom-modules', icon: Database },
       ],
     },
   ];
@@ -58,24 +65,21 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        'fixed top-0 left-0 z-30 h-screen border-r border-[#1F293D] bg-[#0E131F]/95 backdrop-blur-md flex flex-col justify-between transition-all duration-300 select-none',
-        isSidebarCollapsed ? 'w-20' : 'w-64'
+        'fixed top-0 left-0 z-30 h-screen border-r border-[rgba(255,255,255,0.06)] bg-[#0A0B0D] flex flex-col justify-between transition-all duration-200 select-none',
+        isSidebarCollapsed ? 'w-16' : 'w-64'
       )}
     >
-      {/* Brand Header */}
       <div>
-        <div className="flex items-center justify-between h-16 px-4 border-b border-[#1F293D]">
-          <Link href="/" className="flex items-center gap-3 overflow-hidden">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-blue-500/20 flex-shrink-0">
-              <Zap className="h-5 w-5 text-white fill-white" />
+        {/* Workspace Brand */}
+        <div className="flex items-center justify-between h-14 px-4 border-b border-[rgba(255,255,255,0.06)]">
+          <Link href="/" className="flex items-center gap-2.5 overflow-hidden">
+            <div className="h-7 w-7 rounded-lg bg-gradient-to-b from-zinc-700 to-zinc-900 border border-zinc-600/50 flex items-center justify-center text-white font-mono text-xs font-semibold shadow-inner flex-shrink-0">
+              ⌘
             </div>
             {!isSidebarCollapsed && (
               <div className="flex flex-col">
-                <span className="font-bold text-base tracking-tight text-white flex items-center gap-1.5 font-mono">
-                  Career<span className="text-blue-400">OS</span>
-                </span>
-                <span className="text-[10px] text-slate-400 font-medium tracking-wider uppercase">
-                  Developer Engine
+                <span className="font-semibold text-xs tracking-tight text-white font-mono">
+                  career<span className="text-amber-400 font-bold">.os</span>
                 </span>
               </div>
             )}
@@ -83,19 +87,18 @@ export function Sidebar() {
 
           <button
             onClick={toggleSidebar}
-            className="h-7 w-7 rounded-lg border border-[#1F293D] bg-[#161F30] hover:bg-slate-800 text-slate-400 hover:text-slate-200 flex items-center justify-center transition-colors"
-            title={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            className="h-6 w-6 rounded-md border border-[rgba(255,255,255,0.08)] bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 flex items-center justify-center transition-colors"
           >
-            {isSidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            {isSidebarCollapsed ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronLeft className="h-3.5 w-3.5" />}
           </button>
         </div>
 
-        {/* Navigation Sections */}
-        <div className="p-3 space-y-6 overflow-y-auto max-h-[calc(100vh-140px)]">
+        {/* Navigation */}
+        <div className="p-3 space-y-5 overflow-y-auto max-h-[calc(100vh-130px)]">
           {navGroups.map((group, groupIdx) => (
             <div key={groupIdx} className="space-y-1">
               {!isSidebarCollapsed && (
-                <div className="px-3 text-[11px] font-semibold tracking-wider text-slate-500 uppercase">
+                <div className="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider">
                   {group.title}
                 </div>
               )}
@@ -109,23 +112,28 @@ export function Sidebar() {
                       key={item.path}
                       href={item.path}
                       className={cn(
-                        'flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-150 group relative',
+                        'flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 group relative',
                         isActive
-                          ? 'bg-blue-600/15 text-blue-400 border border-blue-500/30 shadow-sm font-semibold'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-[#161F30]/70'
+                          ? 'pill-active font-semibold text-white'
+                          : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900/60'
                       )}
                     >
                       <Icon
                         className={cn(
                           'h-4 w-4 flex-shrink-0 transition-colors',
-                          isActive ? 'text-blue-400' : 'text-slate-400 group-hover:text-slate-200'
+                          isActive ? 'text-amber-400' : 'text-zinc-500 group-hover:text-zinc-300'
                         )}
                       />
                       {!isSidebarCollapsed && (
                         <span className="truncate flex-1">{item.label}</span>
                       )}
+                      {!isSidebarCollapsed && item.kbd && (
+                        <kbd className="text-[9px] font-mono text-zinc-600 group-hover:text-zinc-400">
+                          {item.kbd}
+                        </kbd>
+                      )}
                       {!isSidebarCollapsed && item.badge && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 font-medium">
+                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20">
                           {item.badge}
                         </span>
                       )}
@@ -136,20 +144,20 @@ export function Sidebar() {
             </div>
           ))}
 
-          {/* AI Copilot Quick Launcher Button */}
-          <div className="pt-2">
+          {/* AI Copilot Quick Launcher */}
+          <div className="pt-1">
             <button
               onClick={() => setAiDrawerOpen(true)}
               className={cn(
-                'w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-gradient-to-r from-purple-900/40 via-indigo-900/40 to-blue-900/40 border border-purple-500/30 text-purple-300 hover:text-white hover:border-purple-500/60 transition-all text-xs font-semibold shadow-lg shadow-purple-950/40 group',
+                'w-full flex items-center gap-2 px-3 py-2 rounded-xl border border-zinc-700/60 bg-gradient-to-b from-[#13161C] to-[#0D0F12] hover:border-zinc-500 transition-all text-xs font-medium text-zinc-200 group',
                 isSidebarCollapsed && 'justify-center px-2'
               )}
             >
-              <Sparkles className="h-4 w-4 text-purple-400 animate-pulse flex-shrink-0 group-hover:scale-110 transition-transform" />
+              <Sparkles className="h-3.5 w-3.5 text-amber-400 flex-shrink-0 group-hover:rotate-12 transition-transform" />
               {!isSidebarCollapsed && (
                 <div className="flex flex-col items-start text-left">
-                  <span>AI Copilot</span>
-                  <span className="text-[10px] text-purple-400/80 font-normal">Gemini Engine</span>
+                  <span className="text-xs font-semibold text-white">Gemini Socratic</span>
+                  <span className="text-[10px] text-zinc-500 font-mono">Interview & Hints</span>
                 </div>
               )}
             </button>
@@ -158,17 +166,17 @@ export function Sidebar() {
       </div>
 
       {/* User Profile Footer */}
-      <div className="p-3 border-t border-[#1F293D] bg-[#0B0F17]/80">
-        <div className={cn('flex items-center gap-3', isSidebarCollapsed && 'justify-center')}>
-          <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-slate-700 to-slate-800 border border-slate-600 flex items-center justify-center text-white font-semibold text-xs flex-shrink-0 shadow-inner">
-            {profile?.full_name ? profile.full_name.charAt(0) : <User className="h-4 w-4" />}
+      <div className="p-3 border-t border-[rgba(255,255,255,0.06)] bg-[#0A0B0D]">
+        <div className={cn('flex items-center gap-2.5', isSidebarCollapsed && 'justify-center')}>
+          <div className="h-7 w-7 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center font-mono text-[11px] font-bold text-zinc-200 flex-shrink-0">
+            {profile?.full_name ? profile.full_name.charAt(0) : <User className="h-3.5 w-3.5" />}
           </div>
           {!isSidebarCollapsed && (
             <div className="flex-1 min-w-0">
-              <div className="text-xs font-semibold text-slate-200 truncate">
+              <div className="text-xs font-medium text-zinc-200 truncate">
                 {profile?.full_name || 'Engineering Student'}
               </div>
-              <div className="text-[10px] text-slate-400 truncate">
+              <div className="text-[10px] text-zinc-500 font-mono truncate">
                 {profile?.target_role || 'Software Engineer'}
               </div>
             </div>
@@ -176,10 +184,10 @@ export function Sidebar() {
           {!isSidebarCollapsed && (
             <button
               onClick={() => signOut()}
-              className="text-slate-400 hover:text-rose-400 transition-colors p-1.5 rounded-lg hover:bg-rose-500/10"
+              className="text-zinc-500 hover:text-rose-400 transition-colors p-1 rounded hover:bg-zinc-800"
               title="Sign out"
             >
-              <LogOut className="h-4 w-4" />
+              <LogOut className="h-3.5 w-3.5" />
             </button>
           )}
         </div>

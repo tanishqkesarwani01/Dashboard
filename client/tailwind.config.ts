@@ -42,20 +42,19 @@ const config: Config = {
         border: 'var(--border)',
         input: 'var(--input)',
         ring: 'var(--ring)',
-        stitch: {
-          dark: '#0B0F17',
-          surface: '#111827',
-          card: '#161F30',
-          border: '#1F293D',
-          borderSubtle: '#1A2333',
-          accent: '#3B82F6',
-          cyan: '#06B6D4',
+        carbon: {
+          canvas: '#08090A',
+          surface: '#0E1013',
+          elevated: '#15181D',
+          subtle: '#1C2027',
+          border: 'rgba(255, 255, 255, 0.07)',
+          borderHover: 'rgba(255, 255, 255, 0.14)',
+          champagne: '#F59E0B',
           emerald: '#10B981',
-          amber: '#F59E0B',
-          purple: '#8B5CF6',
+          cyan: '#06B6D4',
           rose: '#F43F5E',
-          textMuted: '#94A3B8',
-          textMain: '#F8FAFC'
+          muted: '#8A8F98',
+          faint: '#525866',
         }
       },
       borderRadius: {
@@ -64,32 +63,14 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'Inter', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'SF Mono', 'Fira Code', 'monospace'],
       },
       boxShadow: {
-        'glow-primary': '0 0 20px -5px rgba(59, 130, 246, 0.4)',
-        'glow-purple': '0 0 20px -5px rgba(139, 92, 246, 0.4)',
-        'glow-emerald': '0 0 20px -5px rgba(16, 185, 129, 0.4)',
-      },
-      keyframes: {
-        'accordion-down': {
-          from: { height: '0' },
-          to: { height: 'var(--radix-accordion-content-height)' },
-        },
-        'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' },
-        },
-        pulseGlow: {
-          '0%, 100%': { opacity: '1' },
-          '50%': { opacity: '0.6' },
-        }
-      },
-      animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
-        'pulse-glow': 'pulseGlow 2.5s infinite ease-in-out',
+        'hairline': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.08), 0 20px 40px -15px rgba(0, 0, 0, 0.6)',
+        'hairline-hover': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.14), 0 25px 50px -12px rgba(0, 0, 0, 0.7)',
+        'champagne-glow': '0 0 35px -8px rgba(245, 158, 11, 0.2)',
+        'emerald-glow': '0 0 35px -8px rgba(16, 185, 129, 0.2)',
       },
     },
   },

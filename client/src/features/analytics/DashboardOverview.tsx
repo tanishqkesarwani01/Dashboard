@@ -8,282 +8,243 @@ import {
   CalendarCheck,
   Flame,
   Clock,
-  CheckCircle2,
-  AlertCircle,
   Sparkles,
   ArrowRight,
-  TrendingUp,
-  Award,
-  Zap,
-  FolderGit2,
+  CheckCircle2,
 } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 
 export function DashboardOverview() {
   const { profile } = useAuthStore();
   const { setAiDrawerOpen } = useUIStore();
 
-  const kpis = [
-    {
-      title: 'DSA Solved',
-      value: '142',
-      change: '+12 this week',
-      icon: Code2,
-      color: 'text-blue-400',
-      bg: 'bg-blue-500/10',
-      border: 'border-blue-500/20',
-    },
-    {
-      title: 'Active Streak',
-      value: '7 Days',
-      change: 'Personal best: 14',
-      icon: Flame,
-      color: 'text-amber-400',
-      bg: 'bg-amber-500/10',
-      border: 'border-amber-500/20',
-    },
-    {
-      title: 'Study Hours',
-      value: '26.5 hrs',
-      change: 'Goal: 30 hrs/wk',
-      icon: Clock,
-      color: 'text-emerald-400',
-      bg: 'bg-emerald-500/10',
-      border: 'border-emerald-500/20',
-    },
-    {
-      title: 'Spaced Reviews Due',
-      value: '4 Topics',
-      change: 'Scheduled today',
-      icon: AlertCircle,
-      color: 'text-rose-400',
-      bg: 'bg-rose-500/10',
-      border: 'border-rose-500/20',
-    },
-  ];
-
   const dueReviews = [
-    { topic: 'Binary Search (Rotated Array)', interval: 'Day 7 Revision', confidence: 'Medium' },
-    { topic: 'Dynamic Programming (Knapsack 0/1)', interval: 'Day 14 Revision', confidence: 'Hard' },
-    { topic: 'Graph BFS & Topological Sort', interval: 'Day 3 Revision', confidence: 'Medium' },
-    { topic: 'Database Indexing & B-Trees', interval: 'Day 7 Revision', confidence: 'Easy' },
-  ];
-
-  const tracks = [
-    { title: 'Data Structures & Algorithms', progress: 68, count: '142 / 210 Solved', color: 'bg-blue-500', path: '/dsa' },
-    { title: 'Full-Stack Web Development', progress: 84, count: '38 / 45 Topics', color: 'bg-cyan-500', path: '/curriculum/webdev' },
-    { title: 'Core Computer Science (OS & DBMS)', progress: 52, count: '16 / 30 Topics', color: 'bg-purple-500', path: '/curriculum/corecs' },
+    { id: '1', title: 'Binary Search in Rotated Sorted Array', tag: 'LeetCode #33', difficulty: 'Medium', interval: 'Day 7 Revision', diffColor: 'text-amber-400', dotColor: 'bg-amber-400' },
+    { id: '2', title: '0/1 Knapsack & Subset Sum Pattern', tag: 'Dynamic Programming', difficulty: 'Hard', interval: 'Day 14 Revision', diffColor: 'text-rose-400', dotColor: 'bg-rose-400' },
+    { id: '3', title: 'Database Indexing & B-Tree Node Balancing', tag: 'PostgreSQL Core CS', difficulty: 'Concept', interval: 'Day 3 Revision', diffColor: 'text-emerald-400', dotColor: 'bg-emerald-400' },
   ];
 
   return (
-    <div className="space-y-8">
-      {/* Hero Welcome Banner */}
-      <div className="relative overflow-hidden rounded-2xl border border-blue-500/20 bg-gradient-to-r from-[#10192E] via-[#111827] to-[#151226] p-6 md:p-8 shadow-2xl">
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Badge variant="cyan" className="font-mono">PHASE 1 ACTIVE</Badge>
-              <span className="text-xs text-slate-400">Target Role: <strong className="text-slate-200">{profile?.target_role || 'Full-Stack Engineer'}</strong></span>
-            </div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white">
-              Welcome back, {profile?.full_name?.split(' ')[0] || 'Engineer'} 👋
-            </h1>
-            <p className="text-sm text-slate-300 max-w-xl leading-relaxed">
-              You have <span className="text-rose-400 font-semibold">4 spaced repetition topics</span> due for revision today. Keep your 7-day momentum going!
-            </p>
+    <div className="space-y-7">
+      {/* Executive Overview Banner */}
+      <div className="p-6 rounded-2xl hairline-card flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
+        <div className="space-y-1.5 z-10">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-400"></span>
+            <span className="text-[11px] font-mono uppercase tracking-widest text-zinc-400">System Ready • Revision Due</span>
           </div>
+          <h1 className="text-2xl font-bold tracking-tight text-white">
+            Daily Focus: <span className="text-amber-400">4 Algorithmic Revisions</span> & <span className="text-zinc-300">OS Concurrency</span>
+          </h1>
+          <p className="text-xs text-zinc-400 max-w-xl leading-relaxed">
+            Your spaced repetition curve requires 4 problem revisions today to lock Binary Search and Knapsack patterns into permanent memory.
+          </p>
+        </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <Link href="/dsa">
-              <Button variant="primary" className="gap-2">
-                <Code2 className="h-4 w-4" /> Start DSA Practice
-              </Button>
-            </Link>
-            <Button
-              variant="outline"
-              onClick={() => setAiDrawerOpen(true)}
-              className="gap-2 border-purple-500/30 text-purple-300 hover:bg-purple-950/40"
-            >
-              <Sparkles className="h-4 w-4 text-purple-400" /> Ask AI Copilot
-            </Button>
+        <div className="flex items-center gap-3 z-10">
+          <Link href="/dsa">
+            <button className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold transition-all shadow-lg shadow-amber-500/20">
+              Open Revision Queue
+            </button>
+          </Link>
+          <button
+            onClick={() => setAiDrawerOpen(true)}
+            className="px-4 py-2 rounded-xl border border-zinc-700 bg-zinc-900/60 hover:bg-zinc-800 text-zinc-300 text-xs font-medium transition-all"
+          >
+            Consult Gemini Socratic
+          </button>
+        </div>
+
+        <div className="absolute -right-20 -top-20 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+      </div>
+
+      {/* Linear Metrics Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <div className="p-4 rounded-xl hairline-card flex flex-col justify-between space-y-3">
+          <div className="flex items-center justify-between text-zinc-500 text-[11px] font-mono uppercase tracking-wider">
+            <span>DSA Catalog</span>
+            <span className="text-zinc-400">Mastery</span>
+          </div>
+          <div className="space-y-1">
+            <div className="text-2xl font-bold text-white font-mono tracking-tight">142 <span className="text-xs text-zinc-500 font-normal">/ 210</span></div>
+            <div className="text-[11px] text-emerald-400 font-mono flex items-center gap-1">
+              <span>↑ 67.6%</span> <span className="text-zinc-500">syllabus coverage</span>
+            </div>
           </div>
         </div>
 
-        {/* Decorative Background Glows */}
-        <div className="absolute -right-10 -bottom-10 h-48 w-48 rounded-full bg-blue-600/10 blur-3xl pointer-events-none" />
-        <div className="absolute -left-10 -top-10 h-48 w-48 rounded-full bg-purple-600/10 blur-3xl pointer-events-none" />
+        <div className="p-4 rounded-xl hairline-card flex flex-col justify-between space-y-3">
+          <div className="flex items-center justify-between text-zinc-500 text-[11px] font-mono uppercase tracking-wider">
+            <span>Study Velocity</span>
+            <span className="text-zinc-400">Weekly</span>
+          </div>
+          <div className="space-y-1">
+            <div className="text-2xl font-bold text-white font-mono tracking-tight">26.5 <span className="text-xs text-zinc-500 font-normal">hrs</span></div>
+            <div className="text-[11px] text-zinc-400 font-mono">
+              Target: 30.0 hrs <span className="text-amber-400 font-semibold">(88%)</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-4 rounded-xl hairline-card flex flex-col justify-between space-y-3">
+          <div className="flex items-center justify-between text-zinc-500 text-[11px] font-mono uppercase tracking-wider">
+            <span>Active Momentum</span>
+            <span className="text-amber-400 font-bold">● LIVE</span>
+          </div>
+          <div className="space-y-1">
+            <div className="text-2xl font-bold text-white font-mono tracking-tight">7 <span className="text-xs text-zinc-500 font-normal">Days</span></div>
+            <div className="text-[11px] text-zinc-500 font-mono">
+              Personal Record: <strong className="text-zinc-300">14 Days</strong>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-4 rounded-xl hairline-card flex flex-col justify-between space-y-3 border-amber-500/20 bg-amber-500/[0.02]">
+          <div className="flex items-center justify-between text-amber-400/80 text-[11px] font-mono uppercase tracking-wider">
+            <span>Spaced Reviews</span>
+            <span className="text-amber-400">Today</span>
+          </div>
+          <div className="space-y-1">
+            <div className="text-2xl font-bold text-amber-300 font-mono tracking-tight">4 <span className="text-xs text-zinc-500 font-normal">Cards</span></div>
+            <div className="text-[11px] text-amber-400/90 font-mono">
+              Next trigger: in 6 hours
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* KPI Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {kpis.map((kpi, idx) => {
-          const Icon = kpi.icon;
-          return (
-            <Card key={idx} className="border-[#1F293D] bg-[#111827]/90 hover:border-slate-700 transition-all">
-              <CardContent className="p-5 flex items-center justify-between">
-                <div className="space-y-1">
-                  <div className="text-xs font-medium text-slate-400">{kpi.title}</div>
-                  <div className="text-2xl font-bold text-white tracking-tight font-mono">{kpi.value}</div>
-                  <div className="text-[11px] text-slate-500">{kpi.change}</div>
-                </div>
-                <div className={`h-11 w-11 rounded-xl ${kpi.bg} ${kpi.border} border flex items-center justify-center flex-shrink-0`}>
-                  <Icon className={`h-5 w-5 ${kpi.color}`} />
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
-
-      {/* Main Two-Column Layout */}
+      {/* Main Two-Column Hub */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Cols: Spaced Repetition Due & Syllabi Progress */}
+        {/* Left 2 Columns: Spaced Repetition Due Queue */}
         <div className="lg:col-span-2 space-y-6">
-          <Card className="border-[#1F293D] bg-[#111827]">
-            <CardHeader className="flex flex-row items-center justify-between pb-3">
+          <div className="p-6 rounded-2xl hairline-card space-y-5">
+            <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-base flex items-center gap-2 text-white">
-                  <AlertCircle className="h-4 w-4 text-rose-400" />
-                  Spaced Repetition Reviews Due Today
-                </CardTitle>
-                <CardDescription>
-                  Revise these topics to solidify algorithmic patterns in long-term memory.
-                </CardDescription>
+                <h3 className="text-sm font-semibold tracking-tight text-white">Spaced Repetition Queue (Scheduled for Today)</h3>
+                <p className="text-xs text-zinc-400">Reviewing at calculated intervals increases memory retention by over 300%.</p>
               </div>
-              <Link href="/dsa">
-                <Button variant="ghost" size="sm" className="text-xs text-blue-400 hover:text-blue-300 gap-1">
-                  View All <ArrowRight className="h-3 w-3" />
-                </Button>
+              <Link href="/dsa" className="text-xs font-mono text-zinc-400 hover:text-white transition-colors">
+                View All &rarr;
               </Link>
-            </CardHeader>
-            <CardContent className="space-y-2.5">
-              {dueReviews.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between p-3 rounded-xl bg-[#0B0F17] border border-[#1F293D] hover:border-blue-500/30 transition-all group"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 text-xs font-mono">
-                      #{idx + 1}
-                    </div>
-                    <div>
-                      <div className="text-xs font-semibold text-slate-200 group-hover:text-blue-400 transition-colors">
-                        {item.topic}
-                      </div>
-                      <div className="text-[10px] text-slate-500 flex items-center gap-2">
-                        <span>{item.interval}</span>
-                        <span>•</span>
-                        <span className={item.confidence === 'Hard' ? 'text-rose-400' : 'text-amber-400'}>
-                          {item.confidence} Difficulty
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <Link href="/dsa">
-                    <Button size="sm" variant="outline" className="text-xs h-7 px-3 text-slate-300 hover:text-white">
-                      Solve & Review
-                    </Button>
-                  </Link>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+            </div>
 
-          <Card className="border-[#1F293D] bg-[#111827]">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base flex items-center gap-2 text-white">
-                <BookOpen className="h-4 w-4 text-cyan-400" />
-                Curriculum Tracks & Mastery
-              </CardTitle>
-              <CardDescription>
-                Track completion across technical pillars required for software engineering roles.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {tracks.map((track, idx) => (
-                <div key={idx} className="space-y-2 p-3.5 rounded-xl bg-[#0B0F17] border border-[#1F293D]">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-200">{track.title}</span>
-                    <span className="font-mono text-slate-400">{track.count} ({track.progress}%)</span>
+            <div className="space-y-2">
+              {dueReviews.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between p-3.5 rounded-xl border border-[rgba(255,255,255,0.06)] bg-[#0C0E11] hover:border-zinc-700 hover:bg-[#111418] transition-all group"
+                >
+                  <div className="flex items-center gap-3.5">
+                    <div className={`h-2 w-2 rounded-full ${item.dotColor}`}></div>
+                    <div>
+                      <div className="text-xs font-medium text-zinc-100 group-hover:text-amber-300 transition-colors">
+                        {item.title}
+                      </div>
+                      <div className="text-[10px] font-mono text-zinc-500 flex items-center gap-2 mt-0.5">
+                        <span className="text-zinc-400">{item.tag}</span>
+                        <span>•</span>
+                        <span className={item.diffColor}>{item.difficulty}</span>
+                        <span>•</span>
+                        <span className="text-zinc-400">{item.interval}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
-                    <div
-                      className={`h-full ${track.color} rounded-full transition-all duration-500`}
-                      style={{ width: `${track.progress}%` }}
-                    />
+                  <div className="flex items-center gap-2">
+                    <Link href="/dsa">
+                      <button className="px-2.5 py-1 rounded-md border border-zinc-700 hover:bg-zinc-800 text-[11px] font-mono text-zinc-300">
+                        Review
+                      </button>
+                    </Link>
                   </div>
                 </div>
               ))}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
+
+          {/* 365-Day Heatmap Preview */}
+          <div className="p-6 rounded-2xl hairline-card space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-semibold text-white tracking-tight">365-Day Study Momentum Matrix</h3>
+                <p className="text-xs text-zinc-400">Visualizing 52 weeks of engineering practice consistency.</p>
+              </div>
+              <Link href="/habits" className="text-xs font-mono text-emerald-400 hover:underline">
+                184.5 Total Hours &rarr;
+              </Link>
+            </div>
+
+            <div className="p-3 bg-[#090A0D] rounded-xl border border-[rgba(255,255,255,0.06)] overflow-x-auto">
+              <div className="grid grid-rows-7 grid-flow-col gap-1 w-max">
+                {Array.from({ length: 52 * 7 }).map((_, i) => {
+                  const intensities = ['bg-[#15181E]', 'bg-zinc-800', 'bg-zinc-600', 'bg-amber-600/80', 'bg-amber-400'];
+                  const color = (i % 3 === 0 || i % 7 === 0) ? intensities[(i % 4) + 1] : intensities[0];
+                  return (
+                    <div key={i} className={`h-2 w-2 rounded-[2px] ${color}`} />
+                  );
+                })}
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Right 1 Col: Quick Actions & Pro Tip */}
+        {/* Right 1 Column: Socratic AI & Curriculum Ratios */}
         <div className="space-y-6">
-          <Card className="border-[#1F293D] bg-[#111827]">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base flex items-center gap-2 text-white">
-                <Zap className="h-4 w-4 text-amber-400" /> Quick Actions
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2.5">
-              <Link href="/habits" className="block">
-                <div className="p-3 rounded-xl bg-[#0B0F17] border border-[#1F293D] hover:border-emerald-500/40 transition-all flex items-center justify-between group">
-                  <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-                      <CalendarCheck className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-semibold text-slate-200 group-hover:text-emerald-400">Log Daily Study</div>
-                      <div className="text-[10px] text-slate-500">Record today's study hours</div>
-                    </div>
-                  </div>
-                  <ArrowRight className="h-3.5 w-3.5 text-slate-600 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all" />
-                </div>
-              </Link>
-
-              <Link href="/projects" className="block">
-                <div className="p-3 rounded-xl bg-[#0B0F17] border border-[#1F293D] hover:border-blue-500/40 transition-all flex items-center justify-between group">
-                  <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-                      <FolderGit2 className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-semibold text-slate-200 group-hover:text-blue-400">Portfolio Projects</div>
-                      <div className="text-[10px] text-slate-500">Manage side project milestones</div>
-                    </div>
-                  </div>
-                  <ArrowRight className="h-3.5 w-3.5 text-slate-600 group-hover:text-blue-400 group-hover:translate-x-0.5 transition-all" />
-                </div>
-              </Link>
-
-              <div
-                onClick={() => setAiDrawerOpen(true)}
-                className="p-3 rounded-xl bg-purple-950/20 border border-purple-500/20 hover:border-purple-500/40 transition-all flex items-center justify-between cursor-pointer group"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
-                    <Sparkles className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-semibold text-purple-300 group-hover:text-white">AI Mock Interviewer</div>
-                    <div className="text-[10px] text-purple-400/70">Test your CS knowledge</div>
-                  </div>
-                </div>
-                <ArrowRight className="h-3.5 w-3.5 text-purple-400 group-hover:translate-x-0.5 transition-all" />
+          <div className="p-5 rounded-2xl hairline-card border-zinc-700/60 bg-gradient-to-b from-[#13161C] to-[#0D0F12] space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-amber-400">✦</span>
+                <span className="text-xs font-semibold text-white tracking-tight">Gemini Socratic Copilot</span>
               </div>
-            </CardContent>
-          </Card>
-
-          <div className="p-4 rounded-xl border border-indigo-500/20 bg-indigo-950/20 space-y-2">
-            <div className="flex items-center gap-2 text-xs font-semibold text-indigo-300">
-              <Award className="h-4 w-4 text-indigo-400" /> Pro Interview Tip
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400">LIVE</span>
             </div>
-            <p className="text-[11px] text-slate-300 leading-relaxed">
-              When explaining DSA solutions in interviews, always state the brute-force time complexity first before jumping directly to optimal $O(N \log N)$ or $O(N)$ solutions.
-            </p>
+
+            <div className="p-3 rounded-xl bg-[#090A0D] border border-zinc-800 text-xs text-zinc-300 leading-relaxed font-mono">
+              <div className="text-[10px] text-zinc-500 mb-1">PROMPT SUGGESTION:</div>
+              "How does two-pointer technique reduce $O(N^2)$ to $O(N)$ on sorted arrays?"
+            </div>
+
+            <button
+              onClick={() => setAiDrawerOpen(true)}
+              className="w-full py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-medium transition-all"
+            >
+              Launch Interview Assistant &rarr;
+            </button>
+          </div>
+
+          <div className="p-5 rounded-2xl hairline-card space-y-4">
+            <h3 className="text-xs font-semibold font-mono uppercase tracking-wider text-zinc-400">Pillars Completion</h3>
+
+            <div className="space-y-3.5">
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs font-mono">
+                  <span className="text-zinc-300">Data Structures & Algo</span>
+                  <span className="text-zinc-400">142/210 (68%)</span>
+                </div>
+                <div className="w-full h-1 rounded-full bg-zinc-800 overflow-hidden">
+                  <div className="h-full bg-amber-400 rounded-full" style={{ width: '68%' }} />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs font-mono">
+                  <span className="text-zinc-300">Web Architecture & Node</span>
+                  <span className="text-zinc-400">38/45 (84%)</span>
+                </div>
+                <div className="w-full h-1 rounded-full bg-zinc-800 overflow-hidden">
+                  <div className="h-full bg-emerald-400 rounded-full" style={{ width: '84%' }} />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs font-mono">
+                  <span className="text-zinc-300">Core CS (OS, DBMS, CN)</span>
+                  <span className="text-zinc-400">16/30 (52%)</span>
+                </div>
+                <div className="w-full h-1 rounded-full bg-zinc-800 overflow-hidden">
+                  <div className="h-full bg-zinc-400 rounded-full" style={{ width: '52%' }} />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
