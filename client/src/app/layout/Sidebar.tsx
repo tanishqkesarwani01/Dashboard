@@ -70,17 +70,18 @@ export function Sidebar() {
       )}
     >
       <div>
-        {/* Workspace Brand */}
-        <div className="flex items-center justify-between h-14 px-4 border-b border-[rgba(255,255,255,0.06)]">
+        {/* Workspace Brand with Stitch Logo */}
+        <div className="flex items-center justify-between h-16 px-3.5 border-b border-[rgba(255,255,255,0.06)]">
           <Link href="/" className="flex items-center gap-2.5 overflow-hidden">
-            <div className="h-7 w-7 rounded-lg bg-gradient-to-b from-zinc-700 to-zinc-900 border border-zinc-600/50 flex items-center justify-center text-white font-mono text-xs font-semibold shadow-inner flex-shrink-0">
-              ⌘
+            <div className="h-9 w-9 rounded-xl overflow-hidden border border-amber-500/30 bg-[#0E1013] shadow-[0_0_15px_rgba(245,158,11,0.15)] flex-shrink-0 flex items-center justify-center">
+              <img src="/logo.png" alt="CareerOS Logo" className="h-full w-full object-cover" />
             </div>
             {!isSidebarCollapsed && (
               <div className="flex flex-col">
-                <span className="font-semibold text-xs tracking-tight text-white font-mono">
-                  career<span className="text-amber-400 font-bold">.os</span>
+                <span className="font-bold text-sm tracking-tight text-white font-mono flex items-center gap-1">
+                  career<span className="text-amber-400">.os</span>
                 </span>
+                <span className="text-[10px] text-amber-400/80 font-mono tracking-wider">Tier-1 Prep</span>
               </div>
             )}
           </Link>
@@ -94,7 +95,7 @@ export function Sidebar() {
         </div>
 
         {/* Navigation */}
-        <div className="p-3 space-y-5 overflow-y-auto max-h-[calc(100vh-130px)]">
+        <div className="p-3 space-y-5 overflow-y-auto max-h-[calc(100vh-140px)]">
           {navGroups.map((group, groupIdx) => (
             <div key={groupIdx} className="space-y-1">
               {!isSidebarCollapsed && (
@@ -149,15 +150,15 @@ export function Sidebar() {
             <button
               onClick={() => setAiDrawerOpen(true)}
               className={cn(
-                'w-full flex items-center gap-2 px-3 py-2 rounded-xl border border-zinc-700/60 bg-gradient-to-b from-[#13161C] to-[#0D0F12] hover:border-zinc-500 transition-all text-xs font-medium text-zinc-200 group',
+                'w-full flex items-center gap-2.5 px-3 py-2 rounded-xl border border-purple-500/30 bg-gradient-to-b from-purple-950/20 to-[#0D0F12] hover:border-purple-500/60 transition-all text-xs font-medium text-purple-200 group shadow-[0_0_15px_rgba(139,92,246,0.1)]',
                 isSidebarCollapsed && 'justify-center px-2'
               )}
             >
-              <Sparkles className="h-3.5 w-3.5 text-amber-400 flex-shrink-0 group-hover:rotate-12 transition-transform" />
+              <Sparkles className="h-4 w-4 text-purple-400 flex-shrink-0 group-hover:rotate-12 transition-transform" />
               {!isSidebarCollapsed && (
                 <div className="flex flex-col items-start text-left">
-                  <span className="text-xs font-semibold text-white">Gemini Socratic</span>
-                  <span className="text-[10px] text-zinc-500 font-mono">Interview & Hints</span>
+                  <span className="text-xs font-semibold text-purple-300 font-mono">Socratic Copilot</span>
+                  <span className="text-[10px] text-zinc-500 font-mono">Gemini Interview AI</span>
                 </div>
               )}
             </button>
