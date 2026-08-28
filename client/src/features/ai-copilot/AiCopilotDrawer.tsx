@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useUIStore } from '@/stores/useUIStore';
-import { Sparkles, X, Send, Bot, User, RefreshCw } from 'lucide-react';
+import { Sparkles, X, Send, Bot, User, RefreshCw, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { AiMessage, AiMode } from '@/types';
+import { apiRequest } from '@/lib/api';
+import { toast } from 'sonner';
 
 export function AiCopilotDrawer() {
   const { isAiDrawerOpen, setAiDrawerOpen } = useUIStore();
@@ -25,10 +27,11 @@ export function AiCopilotDrawer() {
   const handleSend = async () => {
     if (!prompt.trim() || isTyping) return;
 
+    const userPrompt = prompt.trim();
     const userMsg: AiMessage = {
       id: Date.now().toString(),
       role: 'user',
-      content: prompt,
+      content: userPrompt,
       timestamp: new Date().toISOString(),
     };
 
@@ -36,31 +39,55 @@ export function AiCopilotDrawer() {
     setPrompt('');
     setIsTyping(true);
 
-    setTimeout(() => {
-      let botReply = '';
-      if (mode === 'socratic') {
-        botReply = "💡 **Socratic Hint**: Think about how sorting the array changes the problem structure. If you maintain two pointers at `left = 0` and `right = n - 1`, can you eliminate half of the search space on each comparison?";
-      } else if (mode === 'mock-interview') {
-        botReply = "🎙️ **Mock Interviewer**: That's a solid start! Can you now explain the trade-offs of using a B-Tree index versus a Hash Index in a PostgreSQL database?";
-      } else {
-        botReply = "🚀 **Career Advice**: Emphasize the quantifiable impact in your project bullet points (e.g., 'Reduced query latency by 40%' rather than 'Worked on queries').";
-      }
+    try {
+      // Prepare history format for backend
+      const history = messages.slice(-6).map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
 
+      const res = await apiRequest<{
+        success: boolean;
+        data: { response: string; mode: string; timestamp: string };
+      }>('/api/ai/chat', {
+        method: 'POST',
+        body: JSON.stringify({
+          prompt: userPrompt,
+          mode,
+          history,
+        }),
+      });
+
+      if (res.success && res.data?.response) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: (Date.now() + 1).toString(),
+            role: 'model',
+            content: res.data.response,
+            timestamp: res.data.timestamp || new Date().toISOString(),
+          },
+        ]);
+      }
+    } catch (err: any) {
+      toast.error('AI Service note: ' + (err.message || 'Failed to get response'));
       setMessages((prev) => [
         ...prev,
         {
           id: (Date.now() + 1).toString(),
           role: 'model',
-          content: botReply,
+          content: "⚠️ I encountered a temporary connection issue. Please ensure the backend server is running.",
           timestamp: new Date().toISOString(),
         },
       ]);
+    } finally {
       setIsTyping(false);
-    }, 900);
+    }
   };
 
   return (
     <div className="fixed inset-y-0 right-0 z-50 w-full max-w-lg bg-[#0E131F] border-l border-[#1F293D] shadow-2xl flex flex-col animate-in slide-in-from-right duration-200">
+      {/* Drawer Header */}
       <div className="h-16 px-5 border-b border-[#1F293D] flex items-center justify-between bg-[#111827]/80">
         <div className="flex items-center gap-2.5">
           <div className="h-8 w-8 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400">
@@ -83,6 +110,7 @@ export function AiCopilotDrawer() {
         </button>
       </div>
 
+      {/* Mode Selector Chips */}
       <div className="p-3 border-b border-[#1F293D] bg-[#0B0F17] flex items-center gap-2 overflow-x-auto">
         <button
           onClick={() => setMode('socratic')}
@@ -113,6 +141,7 @@ export function AiCopilotDrawer() {
         </button>
       </div>
 
+      {/* Message Chat Area */}
       <div className="flex-1 p-4 overflow-y-auto space-y-4">
         {messages.map((msg) => (
           <div
@@ -149,6 +178,7 @@ export function AiCopilotDrawer() {
         )}
       </div>
 
+      {/* Input Form */}
       <div className="p-3 border-t border-[#1F293D] bg-[#111827]">
         <div className="flex items-center gap-2">
           <input
